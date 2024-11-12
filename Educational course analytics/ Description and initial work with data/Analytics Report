@@ -1,0 +1,45 @@
+# Course Analytics Report for Educational Program Producers
+
+## Business Task
+The goal was to analyze existing data to prepare an analytical report that would help educational program producers develop effective strategies for updating and improving courses. The project involved multiple key objectives:
+
+1. **Course Overview**: Provide a concise description of each course based on calculated metrics.
+2. **Instructor Workload Estimation**: Calculate the potential workload on instructors to determine whether expanding the teaching staff is necessary.
+3. **Content Quality Analysis**: Identify problematic modules that may require improvement through two dedicated content quality analysis points.
+4. **Seasonal Trends**: Analyze data to identify potential seasonality affecting course engagement.
+5. **Student Performance Metric**: Develop a custom metric to identify underperforming students for targeted support.
+
+Each section of the analysis was accompanied by a conclusion based on the derived metrics.
+
+## Technical Implementation
+The solution was implemented using Python and several key libraries including pandas, matplotlib, and numpy. Here are the major steps:
+
+- **Data Preprocessing**: Imported and merged multiple datasets such as courses, students, course contents, progresses, and progress phases. Missing values were handled by filling gaps to ensure proper data integration.
+
+- **Data Integration**: Combined data on course modules, lessons, and students to create a comprehensive dataset that supported the analysis of the courses and their contents.
+
+- **Key Metrics**:
+  - **Course Structure Analysis**: Calculated the number of modules and lessons for each course and analyzed their distribution. Highlighted courses with missing content to identify data quality issues.
+  - **Student Age Analysis**: Analyzed student demographics, showing a wide range of student ages from 16 to 60 years, with a median age around 30. This provided insights into target audience characteristics for each course.
+  - **Student Enrollment**: Visualized enrollment data to show which courses were most popular, with notable interest in programming, digital project management, and web development.
+
+- **Instructor Workload Assessment**: Estimated instructor workload based on the number of students per course and their progress, helping assess the potential need for additional teaching resources.
+
+- **Content Quality Analysis**: Identified modules with incomplete or missing lessons, which indicated areas for content enhancement. Highlighted courses with uneven module distribution or zero-lesson modules, calling attention to possible issues with curriculum design.
+
+- **Seasonal Trends and Student Performance**: Used statistical tools to analyze seasonal enrollment trends and designed a custom metric for identifying underperforming students, allowing for targeted interventions.
+
+## Visualizations
+- Created **bar charts** to display the number of students enrolled in each course, providing a clear picture of course popularity.
+- Developed a **stacked bar chart** that depicted student enrollment across different fields (Development, Design, Business), revealing that courses in Development attracted the highest number of students.
+
+## Key Insights
+- Courses like "Web Developer", "Internet Marketer by Ingate", and "Digital Project Manager" showed significantly higher enrollment numbers, suggesting effective content and strong alignment with market needs.
+- A significant number of course modules were found to have missing or incomplete content, highlighting the need for a thorough review to enhance course quality.
+- Enrollment demographics revealed that programming courses primarily attract a younger audience (18-35 years), while courses such as "Basic Excel" appealed more to older professionals (22-55 years).
+
+## Recommendations
+- **Marketing Efforts**: Strengthen marketing for less popular courses to increase student interest.
+- **Content Review**: Review and fill in missing data related to modules and lessons, particularly those with zero entries.
+- **Audience Targeting**: Tailor courses to better suit their intended audiences. For instance, enhance advanced professional skills courses for older students, while keeping technical courses appealing to younger learners.
+
