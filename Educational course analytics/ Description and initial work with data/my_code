@@ -1,0 +1,91 @@
+# Import the necessary libraries
+import zipfile
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Unzip the archive
+with zipfile.ZipFile('/content/Data_1.zip', 'r') as zip_ref:
+    zip_ref.extractall('/content/')
+
+# Load the datasets
+courses = pd.read_csv('/content/Data/courses.csv')
+students = pd.read_csv('/content/Data/students.csv')
+course_contents = pd.read_csv('/content/Data/course_contents.csv')
+progresses = pd.read_csv('/content/Data/progresses.csv')
+progress_phases = pd.read_csv('/content/Data/progress_phases.csv')
+
+# Fill in missing data for correct merging
+course_contents['module_title'].fillna('Untitled', inplace=True)
+course_contents['lesson_number'].fillna(0, inplace=True)
+
+# Merge the datasets (excluding students.csv)
+merged = progresses.merge(courses, left_on='course_id', right_on='id', how='inner', suffixes=('', '_course'))
+merged = merged.merge(course_contents, left_on='course_id', right_on='course_id', how='inner')
+merged = merged.merge(progress_phases, left_on=['id', 'module_number', 'lesson_number'], right_on=['progress_id', 'module_number', 'lesson_number'], how='inner')
+
+# Save student data separately
+students_data = students.copy()
+
+# Data description
+print("Total number of courses:", courses['title'].nunique())
+
+# Number of modules per course
+modules_per_course = course_contents.merge(courses, left_on='course_id', right_on='id', how='outer').groupby('title')['module_number'].nunique()
+print("Number of modules per course:", modules_per_course)
+
+# Number of lessons in each module for each course
+lessons_per_module = course_contents.merge(courses, left_on='course_id', right_on='id', how='inner').groupby(['title', 'module_title'])['lesson_title'].count()
+lessons_structure = course_contents.merge(courses, left_on='course_id', right_on='id', how='inner').groupby(['title', 'module_title'])['lesson_title'].count().reset_index()
+lessons_structure.rename(columns={'title': 'Course Title', 'module_title': 'Module Title', 'lesson_title': 'Number of Lessons'}, inplace=True)
+lessons_pivot = lessons_structure.pivot(index='Course Title', columns='Module Title', values='Number of Lessons').fillna(0)
+print("Number of lessons in each module for each course:\n", lessons_pivot)
+
+# Median number of lessons per module for each course
+median_lessons_per_module = lessons_per_module.groupby('title').median()
+print("Median number of lessons per module for each course:", median_lessons_per_module)
+
+# Number of students per course
+students_per_course = progresses.merge(courses, left_on='course_id', right_on='id', how='inner')['title'].value_counts()
+print("Number of students per course:", students_per_course)
+
+# Calculate student age
+students_data['birthday'] = pd.to_datetime(students_data['birthday'], errors='coerce')
+students_data['age'] = (pd.to_datetime('today') - students_data['birthday']).dt.days // 365
+# Set plausible age range (e.g., from 10 to 100 years)
+students_data = students_data[(students_data['age'] >= 16) & (students_data['age'] <= 60)]
+
+# General age statistics
+print("Minimum student age:", students_data['age'].min())
+print("Maximum student age:", students_data['age'].max())
+print("Average student age:", students_data['age'].mean())
+print("Median student age:", students_data['age'].median())
+
+# Student age per course
+merged_with_students = merged.merge(students_data, left_on='student_id', right_on='id', how='inner', suffixes=('', '_student'))
+age_per_course = merged_with_students.groupby('title')['age'].agg(['min', 'max', 'mean', 'median'])
+print("Student age per course:", age_per_course)
+
+# Plotting bar chart for the number of students per course
+plt.figure(figsize=(10, 6))
+plt.bar(students_per_course.index, students_per_course.values, align='center')
+plt.xlabel('Course Titles')
+plt.ylabel('Number of Students')
+plt.title('Number of Students per Course')
+plt.xticks(rotation=45, ha='right')
+plt.show()
+
+# Plotting horizontal bar chart with additional conditions
+# Prepare data for the chart
+students_per_course_field = merged_with_students.groupby(['title', 'field'])['student_id'].nunique().unstack().fillna(0)
+
+# Plot the chart
+students_per_course_field.plot(kind='barh', stacked=False, alpha=0.5, figsize=(12, 8))
+plt.axvline(np.median(students_per_course_field.values.flatten()), color='red', linestyle='--', label='Median')
+plt.xlabel('Number of Students')
+plt.ylabel('Course Titles')
+plt.title('Number of Students per Course by Field')
+plt.legend(title='Fields')
+plt.gca().spines['top'].set_visible(False)
+plt.gca().spines['right'].set_visible(False)
+plt.show()
