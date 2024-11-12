@@ -25,6 +25,12 @@ We needed to calculate the number of students each month for each course who beg
 
 7. **Recommendations**: To handle workload spikes, I recommend better resource allocation for instructors and considering automation of assignment grading, particularly for popular courses.
 
+8. **Analytical conclusion**:
+   - Based on the analysis, it was found that the number of students starting homework has seasonal fluctuations, which may be related to the beginning of study cycles and advertising campaigns.
+   - Courses related to programming have a significantly higher student growth rate and workload for instructors compared to other courses.
+   - The workload on instructors for checking homework is distributed unevenly, especially in the first months of the learning cycle.
+   - It is recommended to distribute instructor resources more evenly and consider automating homework grading, especially for popular courses, to reduce peak workloads.
+
 ### Key Technologies Used
 - **Pandas**: For data manipulation and analysis.
 - **Matplotlib**: For visualization of student growth and workload distribution.
