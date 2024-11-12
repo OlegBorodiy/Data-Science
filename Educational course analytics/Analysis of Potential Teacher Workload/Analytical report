@@ -1,0 +1,35 @@
+**Example Project: Analysis of Potential Teacher Workload**
+
+This project tackles the analysis of potential teacher workload by determining the number of students starting their first course assignment over time. The goal was to estimate the workload at different times, considering the fluctuation of student activity throughout the year.
+
+### Problem Statement
+We needed to calculate the number of students each month for each course who began working on their first homework assignment from March 2016 to July 2019. The challenge was not only to identify which assignments were the first homework tasks but also to create a scalable solution that could handle thousands of courses, each with different module structures, without hardcoding specific details.
+
+### Solution Overview
+1. **Data Preparation**: I used several CSV files, containing course, student, progress, and assignment phase data, which I loaded into Pandas dataframes after unzipping the source file. Missing data was addressed for proper merging and analysis.
+
+2. **Identification of First Assignments**: A key task was to identify the first homework assignment per course in an automated manner. Using logical filters, I grouped and determined the earliest module and lesson numbers that represented the first assignment in each course.
+
+3. **Tracking Student Progress**: I merged datasets to track when students began working on their first homework. The data was filtered to include only the relevant time period (March 2016 - July 2019), and I grouped by month and course to determine how many students started their homework each month.
+
+4. **Visualization**: To illustrate the results, I created line graphs:
+   - Individual line graphs for each course showing the number of students starting their first homework each month.
+   - An aggregated line graph comparing student progress across all courses.
+
+5. **Extended Analysis**: I also analyzed the workload by considering assignment progressions and calculating the number of assignments worked on each month for each course. This was done by transforming date ranges into individual months, enabling visualization of the workload distribution over time.
+
+6. **Findings**:
+   - The number of students beginning assignments showed seasonal patterns, likely linked to academic schedules and promotional efforts.
+   - Programming courses saw significantly higher student growth, implying a heavier teacher workload.
+   - Teacher workload was found to be unevenly distributed, particularly at the start of each course cycle, leading to potential resource bottlenecks.
+
+7. **Recommendations**: To handle workload spikes, I recommend better resource allocation for instructors and considering automation of assignment grading, particularly for popular courses.
+
+### Key Technologies Used
+- **Pandas**: For data manipulation and analysis.
+- **Matplotlib**: For visualization of student growth and workload distribution.
+
+The solution aimed to be scalable and adaptable to a larger number of courses without needing manual configuration. You can find the complete code in this repository.
+
+Feel free to explore and provide any feedback!
+
