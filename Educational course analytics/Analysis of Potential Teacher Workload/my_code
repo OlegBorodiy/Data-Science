@@ -1,0 +1,134 @@
+# Import necessary libraries
+import zipfile
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from pandas.tseries.offsets import MonthEnd, MonthBegin
+
+# Unzip the archive
+with zipfile.ZipFile('/content/Data_1.zip', 'r') as zip_ref:
+    zip_ref.extractall('/content/')
+
+# Load datasets
+courses = pd.read_csv('/content/Data/courses.csv')
+students = pd.read_csv('/content/Data/students.csv')
+course_contents = pd.read_csv('/content/Data/course_contents.csv')
+progresses = pd.read_csv('/content/Data/progresses.csv')
+progress_phases = pd.read_csv('/content/Data/progress_phases.csv')
+
+# Fill in missing data to facilitate merging
+course_contents['module_title'].fillna('Untitled', inplace=True)
+course_contents['lesson_number'].fillna(0, inplace=True)
+
+# Rename a column in the students dataset for convenience
+students.rename(columns={'id_': 'student_id'}, inplace=True)
+
+# Create a dataset with "addresses" of the first homework assignments for each course
+first_homework_per_course = course_contents.loc[course_contents['lesson_title'].str.contains('homework', case=False)].groupby('course_id').agg({'module_number': 'min', 'lesson_number': 'min'}).reset_index()
+
+# Merge progresses with first_homework_per_course to get information about the first homework for each progress
+progresses_with_first_homework = progresses.merge(first_homework_per_course, on='course_id', how='inner')
+
+# Merge progresses with phases to find the start dates of the first homework
+first_homework_progress = progress_phases.merge(progresses_with_first_homework, left_on=['progress_id', 'module_number', 'lesson_number'], right_on=['id', 'module_number', 'lesson_number'], how='inner')
+
+# Convert dates to the required format
+first_homework_progress['start_date'] = pd.to_datetime(first_homework_progress['start_date'], errors='coerce')
+
+# Filter only those dates that fall within the range from March 2016 to July 2019
+filtered_progress = first_homework_progress[(first_homework_progress['start_date'] >= '2016-03-01') & (first_homework_progress['start_date'] <= '2019-07-31')]
+
+# Calculate the number of students who started doing the first homework each month for each course
+filtered_progress['month'] = filtered_progress['start_date'].dt.to_period('M')
+students_per_month_course = filtered_progress.groupby(['course_id', 'month']).size().reset_index(name='students_started')
+
+# Merge data with the courses table to get course names
+students_per_month_course = students_per_month_course.merge(courses, left_on='course_id', right_on='id', how='left')
+
+# Plot line graph of student growth each month for each course (15 separate graphs)
+for course_title, group_data in students_per_month_course.groupby('title'):
+    plt.figure(figsize=(10, 6))
+    plt.plot(group_data['month'].dt.to_timestamp(), group_data['students_started'], marker='o')
+    plt.xlabel('Month')
+    plt.ylabel('Number of Students')
+    plt.title(f'Student Growth Each Month for Course: {course_title}')
+    plt.xticks(rotation=45, ha='right')
+    plt.grid(visible=True)
+    plt.show()
+
+# Plot line graph with multiple lines (student growth for each course)
+plt.figure(figsize=(14, 8))
+for course_title, group_data in students_per_month_course.groupby('title'):
+    plt.plot(group_data['month'].dt.to_timestamp(), group_data['students_started'], label=course_title)
+
+plt.xlabel('Month')
+plt.ylabel('Number of Students')
+plt.title('Student Growth Each Month for Each Course')
+plt.xticks(rotation=45, ha='right')
+plt.legend(title='Courses', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.gca().spines['top'].set_visible(False)
+plt.gca().spines['right'].set_visible(False)
+plt.grid(visible=True)
+plt.show()
+
+# Convert dates in the progress_phases dataset
+progress_phases['start_date'] = pd.to_datetime(progress_phases['start_date'], errors='coerce')
+progress_phases['finish_date'] = pd.to_datetime(progress_phases['finish_date'], errors='coerce')
+
+# Define the last date in our dataset to account for unfinished work
+last_date = progress_phases['start_date'].max()
+
+# Add the end date as the last available date if it's missing
+progress_phases['finish_date'] = progress_phases['finish_date'].fillna(last_date)
+
+# Create a date range for each record from start_date to finish_date
+progress_phases['month_range'] = progress_phases.apply(lambda row: pd.date_range(start=row['start_date'], end=row['finish_date'], freq='ME') if pd.notna(row['start_date']) and pd.notna(row['finish_date']) else pd.NaT, axis=1)
+
+# Use the explode() method to create individual records for each month in which the homework was being done
+progress_phases_exploded = progress_phases.explode('month_range')
+
+# Convert values to periods for grouping by month
+progress_phases_exploded['month'] = progress_phases_exploded['month_range'].dt.to_period('M')
+
+# Merge data with the progresses table to get course information
+progresses_with_courses = progress_phases_exploded.merge(progresses, left_on='progress_id', right_on='id', how='inner')
+
+# Group data by course and month to get the number of progresses
+progresses_per_month_course = progresses_with_courses.groupby(['course_id', 'month']).size().reset_index(name='progresses_count')
+
+# Merge data with the courses table to get course names
+progresses_per_month_course = progresses_per_month_course.merge(courses, left_on='course_id', right_on='id', how='left')
+
+# Plot line graph for each course (15 separate graphs)
+for course_title, group_data in progresses_per_month_course.groupby('title'):
+    plt.figure(figsize=(10, 6))
+    plt.plot(group_data['month'].dt.to_timestamp(), group_data['progresses_count'], marker='o')
+    plt.xlabel('Month')
+    plt.ylabel('Number of Progresses')
+    plt.title(f'Number of Homework Progresses for Course: {course_title}')
+    plt.xticks(rotation=45, ha='right')
+    plt.grid(visible=True)
+    plt.show()
+
+# Plot general line graph for all courses (15 lines)
+plt.figure(figsize=(14, 8))
+for course_title, group_data in progresses_per_month_course.groupby('title'):
+    plt.plot(group_data['month'].dt.to_timestamp(), group_data['progresses_count'], label=course_title)
+
+plt.xlabel('Month')
+plt.ylabel('Number of Progresses')
+plt.title('Number of Homework Progresses for Each Course')
+plt.xticks(rotation=45, ha='right')
+plt.legend(title='Courses', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.gca().spines['top'].set_visible(False)
+plt.gca().spines['right'].set_visible(False)
+plt.grid(visible=True)
+plt.show()
+
+# Analytical conclusion
+# - Based on the analysis, it was found that the number of students starting homework has seasonal fluctuations,
+#   which may be related to the beginning of study cycles and advertising campaigns.
+# - Courses related to programming have a significantly higher student growth rate and workload for instructors compared to other courses.
+# - The workload on instructors for checking homework is distributed unevenly, especially in the first months of the learning cycle.
+# - It is recommended to distribute instructor resources more evenly and consider automating homework grading,
+#   especially for popular courses, to reduce peak workloads.
