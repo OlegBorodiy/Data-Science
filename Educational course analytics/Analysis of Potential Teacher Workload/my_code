@@ -124,11 +124,3 @@ plt.gca().spines['top'].set_visible(False)
 plt.gca().spines['right'].set_visible(False)
 plt.grid(visible=True)
 plt.show()
-
-# Analytical conclusion
-# - Based on the analysis, it was found that the number of students starting homework has seasonal fluctuations,
-#   which may be related to the beginning of study cycles and advertising campaigns.
-# - Courses related to programming have a significantly higher student growth rate and workload for instructors compared to other courses.
-# - The workload on instructors for checking homework is distributed unevenly, especially in the first months of the learning cycle.
-# - It is recommended to distribute instructor resources more evenly and consider automating homework grading,
-#   especially for popular courses, to reduce peak workloads.
