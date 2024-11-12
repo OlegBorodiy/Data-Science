@@ -33,13 +33,53 @@ The solution was implemented using Python and several key libraries including pa
 - Created **bar charts** to display the number of students enrolled in each course, providing a clear picture of course popularity.
 - Developed a **stacked bar chart** that depicted student enrollment across different fields (Development, Design, Business), revealing that courses in Development attracted the highest number of students.
 
-## Key Insights
-- Courses like "Web Developer", "Internet Marketer by Ingate", and "Digital Project Manager" showed significantly higher enrollment numbers, suggesting effective content and strong alignment with market needs.
-- A significant number of course modules were found to have missing or incomplete content, highlighting the need for a thorough review to enhance course quality.
-- Enrollment demographics revealed that programming courses primarily attract a younger audience (18-35 years), while courses such as "Basic Excel" appealed more to older professionals (22-55 years).
+## Descriptive Section with Conclusions
 
-## Recommendations
-- **Marketing Efforts**: Strengthen marketing for less popular courses to increase student interest.
-- **Content Review**: Review and fill in missing data related to modules and lessons, particularly those with zero entries.
-- **Audience Targeting**: Tailor courses to better suit their intended audiences. For instance, enhance advanced professional skills courses for older students, while keeping technical courses appealing to younger learners.
+The data contains 15 unique courses.
+
+Courses like "Web Developer," "Internet Marketer by Ingate," and "Digital Project Manager" significantly surpass others in terms of student count (over 2,000). 
+Courses such as "Web Design PRO 2.0" and UX Design are also among the top five most popular.
+
+This may be due to factors such as:
+
+- Superior quality of educational materials;
+- Higher content density of these courses (they have the largest number of lessons);
+- More effective marketing campaigns, which align better with trends and the target audience.
+
+The courses have a varying number of modules, ranging from one to several modules. 
+For instance, programming courses may include more modules to cover all the necessary theoretical and practical information.
+
+The data showed a large number of zero values for some modules, indicating the absence of lessons in those modules. This may be due to incomplete data or errors in the recording of course information. 
+In some courses, like "Excel Basic," there are modules with several lessons, such as a module on data visualization in Excel, which contains five lessons. 
+The "Java Developer" course also has modules; however, in most cases, the module data turned out to be empty or contains zero lessons.
+
+The average number of lessons per module varies greatly, and the median value can be zero for many courses, which underscores the issue of missing information for many modules.
+
+The age of students ranges from 16 to 60 years, indicating a wide range of the target audience. 
+The average age of students is about 30 years, suggesting that the courses are popular among young professionals and adults looking to change careers or enhance their skills.
+
+Courses related to more specialized topics, such as programming, generally have a younger audience, ranging from 18 to 35 years old. 
+Courses like "Excel Basic" have an older audience, starting from 22 years and up to 55 years, making them attractive to more mature professionals.
+
+The graphs showed that the number of students in different courses varies significantly, with programming and development-related courses being the most popular.
+
+**Horizontal Bar Chart of Student Numbers by Field:**
+
+The course fields include Development, Design, Business, and others. The chart showed that Development courses attract more students compared to Design or Business courses.
+
+**Key Conclusions:**
+
+- It might be worth considering increased marketing efforts for less popular courses to attract more students.
+- The wide range in student age suggests that courses are appealing to both young professionals and more experienced professionals. Office application courses, like Excel, can attract a more mature audience, while programming courses appeal to young professionals.
+
+**Recommendations:**
+
+1. **Data Verification and Enrichment:**
+   A review and potential correction of the module and lesson data is needed. The large number of zero values suggests incomplete information.
+
+2. **Course Optimization:**
+   Courses that are less popular could be optimized to increase their attractiveness to students, including adding new modules or lessons and enhancing content quality.
+
+3. **Enhance Age-Based Specialization:**
+   The course offerings could be refined to better align with the target audience. For example, courses for older professionals could focus on skill upgrades and career development.
 
